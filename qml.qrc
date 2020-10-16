@@ -4,5 +4,6 @@
         <file>MainWindow.qml</file>
         <file>InputWidget.qml</file>
         <file>CustomComboBox.qml</file>
+        <file>Flie.qml</file>
     </qresource>
 </RCC>

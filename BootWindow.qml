@@ -3,65 +3,107 @@ import QtQuick.Window 2.10
 import QtQuick.Controls 2.1
 
 Window {
-    id: initialize
+    id: initializeWindow
     visible:  true
 
-    width: 680
-    height: 400
+    width: 640
+    height: 480
 
-    property variant win;  // you can hold this as a reference..
-
-    Column{
-        anchors.left:  initialize.top
-        anchors.right: initialize.right
+    Frame{
         anchors.centerIn: parent
 
-        InputWidget{
-            name: qsTr("Размер")
-            value: 20
+        background: Rectangle {
+            color: "lightgrey"
+            radius: 2
         }
 
-        InputWidget{
-            name: qsTr("Мухоемкость")
-            value: 20
-        }
+        Column{
+            anchors.left:  initializeWindow.top
+            anchors.right: initializeWindow.right
+            anchors.centerIn: parent
 
-        Row{
-            spacing: 6
-            height: 40
+            spacing: 20
 
-            Text {
-                id:label
-                text: qsTr("Распределение мух");
+            InputWidget{
+                id: edgeLength
+                anchors.left: parent.left
+                anchors.right: parent.right
+                spring: true
+                value: 2
+
+                name: qsTr("Длинна грани поля")
+                to: 10
             }
 
-            CustomComboBox{
-                model: [qsTr("Автоматическое"), qsTr("Ручное")]
-            }
-        }
+            InputWidget{
+                id: capacity
+                anchors.left: parent.left
+                anchors.right: parent.right
+                spring: true
 
-        InputWidget{
-            name: qsTr("Решительность")
-            value: 20
-        }
-
-        Button{
-            id:button
-            text: qsTr("Старт")
-            background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 40
-                color: button.down ? "#d6d6d6" : "#f6f6f6"
-                border.color: "#26282a"
-                border.width: 1
-                radius: 4
+                name: qsTr("Мухоемкость")
+                to: 10
             }
 
-            onClicked: {
-                var component = Qt.createComponent("MainWindow.qml");
-                var window = component.createObject(initialize);
-                window.show();
-                initialize.hide();
+            Frame{
+                bottomPadding: 20
+
+                background: Rectangle {
+                    color: "white"
+                    border.color: "lightgrey"
+                    radius: 2
+                }
+                Row{
+                    id: distribution
+                    spacing: 10
+
+                    Text {
+                        id:label
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: qsTr("Распределение мух");
+                    }
+
+                    CustomComboBox{
+                        model: [qsTr("Автоматическое"), qsTr("Ручное")]
+                    }
+                }
+            }
+
+            InputWidget{
+                id: determination
+                anchors.left: parent.left
+                anchors.right: parent.right
+                spring: true
+
+                name: qsTr("Решительность")
+                to: 20
+            }
+
+            Button{
+                id:button
+                text: qsTr("Старт")
+                anchors.horizontalCenter: parent.horizontalCenter
+                background: Rectangle {
+                    implicitWidth: 100
+                    implicitHeight: 40
+                    color: button.down ? "#d6d6d6" : "#f6f6f6"
+                    border.color: "#26282a"
+                    border.width: 1
+                    radius: 8
+                }
+
+                onClicked: {
+                    var component = Qt.createComponent("MainWindow.qml");
+                    var window = component.createObject(initializeWindow
+                                                        ,{  columns: edgeLength.value
+                                                           ,rows: edgeLength.value
+                                                           ,flieCapacity: capacity.value
+                                                           ,determination: determination.value
+                                                        }
+                                                        );
+                    window.show();
+                    initializeWindow.hide();
+                }
             }
         }
     }

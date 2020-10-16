@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>pic/arrow64.png</file>
+        <file>pic/ladybug_walk_atlas.png</file>
+        <file>pic/ladybug_fly_atlas.png</file>
+    </qresource>
+</RCC>

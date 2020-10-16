@@ -1,51 +1,76 @@
 import QtQuick 2.0
+import QtQuick.Controls 2.1
 
 Rectangle {
-
-//    property alias model: listView.model
     id: main
-
-    height:  40
     width: childrenRect.width
+    implicitHeight: 30
 
     property var model;
     property int currentIndex: 0
 
-    Row{
-        Text {
-            id: text
-            width: 120
-        }
+    Rectangle{
+        color: "transparent"
+        border.color: "grey"
+        border.width: 1
+        width:  childrenRect.width
+        height: childrenRect.height
 
-        Column{
-            Rectangle{
-                width: main.height/2
-                height: main.height/2
-                color: "red"
-                MouseArea{
-                    anchors.fill:parent
-                    onClicked: if(currentIndex >0) currentIndex -= 1
-                }
 
+        Row{
+            id: rowLo
+            height: Math.max(columnLo.height, itemText.height)
+
+            Label {
+                id: itemText
+                width: 200 // можно сделать функцию выбирающую максимум из модели
+                horizontalAlignment: Text.AlignHCenter
+                anchors.verticalCenter: parent.verticalCenter
             }
-            Rectangle{
-                width: main.height/2
-                height: main.height/2
-                color: "green"
-                MouseArea{
-                    anchors.fill:parent
-                    onClicked: if(currentIndex < (model.length - 1)) currentIndex += 1
+
+            Column{
+                id: columnLo
+                width: childrenRect.width
+
+                Image {
+                    width: main.height/2  + 4
+                    height: main.height/2 + 4
+                    fillMode: Image.PreserveAspectFit
+                    source: "qrc:/pic/arrow64.png"
+                    MouseArea{
+                        anchors.fill:parent
+                        onClicked: if(currentIndex >0) currentIndex -= 1
+                    }
+
                 }
+                Image {
+                    width: main.height/2   + 4
+                    height: main.height/2  + 4
+                    fillMode: Image.PreserveAspectFit
+                    source: "qrc:/pic/arrow64.png"
+                    rotation: 180
+                    MouseArea{
+                        anchors.fill:parent
+                        onClicked: if(currentIndex < (model.length - 1)) currentIndex += 1
+                    }
+                }
+            }
+
+            Rectangle{
+                id: rightMerg
+                height: 1
+                width: 10
+                color: "transparent"
             }
         }
     }
 
     onCurrentIndexChanged: {
-        text.text = model[currentIndex]
+        itemText.text = model[currentIndex]
     }
 
     Component.onCompleted: {
-        text.text = model[currentIndex]
+        itemText.text = model[currentIndex]
     }
 
 }

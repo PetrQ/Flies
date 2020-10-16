@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0" binding="early" xmlns:qt="http://www.qt.io/2015/02/scxml-ext" name="Cicle" qt:editorversion="4.13.2">
+    <state id="Ползание">
+        <qt:editorinfo scenegeometry="813.13;371.50;648.23;292.30;168.99;170.22" geometry="813.13;371.50;-164.90;-79.20;168.99;170.22"/>
+        <transition type="external" event="Взлет" target="Полет">
+            <qt:editorinfo endTargetFactors="92.61;33.10" startTargetFactors="4.45;41.21"/>
+        </transition>
+        <transition type="external" event="Смерть" target="Final_1">
+            <qt:editorinfo endTargetFactors="60.25;20.76"/>
+        </transition>
+    </state>
+    <state id="Полет">
+        <qt:editorinfo scenegeometry="373.49;363.56;255.70;308.88;175.92;150.38" geometry="373.49;363.56;-117.79;-54.68;175.92;150.38"/>
+        <transition type="external" event="Посадка" target="Ползание">
+            <qt:editorinfo endTargetFactors="7.21;73.62" startTargetFactors="91.59;70.35"/>
+        </transition>
+    </state>
+    <final id="Final_1">
+        <qt:editorinfo scenegeometry="732.73;569.71;712.73;549.71;40;40" geometry="732.73;569.71;-20;-20;40;40"/>
+    </final>
+</scxml>
