@@ -64,6 +64,8 @@ private:
     int  rotateToCenter(const QPointF& flInCellPos);
     void makeMove();
     void changeMaxAge(int decrease = 0);
+    void checkAge();
+
     void startMigration(QQuickItem* item , int newCell ); //переход "Взлет" в диаграмме
     void finishMigration(); //переход   "Посадка"  в диаграмме
     void scurry();          //состояние "Ползание" в диаграмме

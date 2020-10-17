@@ -212,7 +212,7 @@ int FlieLogic::rotateToCenter(const QPointF& flInCellPos)
 
 void FlieLogic::scurry()
 {
-    if(m_liveTimer->elapsed() > m_maxAge) die();
+    checkAge();
 
     m_move = 1 + QRandomGenerator::global()->generateDouble();
 
@@ -283,7 +283,13 @@ void FlieLogic::changeMaxAge(int decrease)
 
     m_maxAge -= decrease;
 
-    if(m_liveTimer->elapsed() > m_maxAge) die();
+    checkAge();
+}
+
+void FlieLogic::checkAge()
+{
+    if((m_liveTimer->elapsed() - m_pausePeriod) > m_maxAge)
+        this->die();
 }
 
 void FlieLogic::die()

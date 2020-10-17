@@ -114,7 +114,7 @@ Window   {
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 20
                 text:"OK"
-                onPressed: { popup.close(); scroll.focus = true;}
+                onPressed: popup.close();
 
                 background: Rectangle {
                     implicitWidth: 100
@@ -127,7 +127,6 @@ Window   {
             }
         }
 
-
         background: Rectangle {
             implicitWidth: 300
             implicitHeight: 200
@@ -135,6 +134,10 @@ Window   {
             border.width: 2
 
             radius : 20
+        }
+
+        onClosed: {
+            scroll.focus = true;
         }
     }
 
