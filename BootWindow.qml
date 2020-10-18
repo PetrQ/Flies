@@ -29,7 +29,7 @@ Window {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 spring: true
-                value: 2
+                value: 3
 
                 name: qsTr("Длинна грани поля")
                 to: 10
@@ -54,7 +54,6 @@ Window {
                     radius: 2
                 }
                 Row{
-                    id: distribution
                     spacing: 10
 
                     Text {
@@ -64,6 +63,7 @@ Window {
                     }
 
                     CustomComboBox{
+                        id: distribution
                         model: [qsTr("Автоматическое"), qsTr("Ручное")]
                     }
                 }
@@ -97,8 +97,10 @@ Window {
                     var window = component.createObject(initializeWindow
                                                         ,{  columns: edgeLength.value
                                                            ,rows: edgeLength.value
-                                                           ,flieCapacity: capacity.value
+                                                           ,flieCapacity:  capacity.value
                                                            ,determination: determination.value
+                                                           ,autoAddFlies: distribution.currentIndex === 1 ? 0 :
+                                                                          edgeLength.value * edgeLength.value * capacity.value / 2
                                                         }
                                                         );
                     window.show();

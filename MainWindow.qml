@@ -5,11 +5,11 @@ import flie.components 1.0
 
 Window   {
     id: root
-    objectName: "WWW"
     property alias columns: myGrid.columns
     property alias rows:    myGrid.rows
     property int   flieCapacity:  5 // default val
     property int   determination: 5 // default val
+    property int   autoAddFlies: 0
 
     width:  myGrid.width < Screen.desktopAvailableWidth ? myGrid.width  :
                                                           Screen.desktopAvailableWidth
@@ -19,7 +19,6 @@ Window   {
 
     Flickable  {
         id: scroll
-        objectName:"SSS"
         anchors.fill: parent
 
         contentWidth: contentItem.childrenRect.width;
@@ -30,6 +29,8 @@ Window   {
         Keys.onPressed: {
             if (event.key === Qt.Key_Space) scroll.pause = !scroll.pause
         }
+
+        onFocusChanged: console.log("AAAAAAA!")
 
         Grid{
             id: myGrid
@@ -74,6 +75,31 @@ Window   {
                                                    });
                             Flie.startMigrate.connect(migrate);
                         }
+                    }
+                }
+
+                Component.onCompleted: {
+                    console.log("REP", count)
+                    for(var i = 0; i < root.autoAddFlies; i++){
+                        do{
+                        var ind = Math.round(Math.random() * (root.rows * root.columns -1 ));
+                        }while(repeater.itemAt(ind).isFull)
+
+                        var cell = repeater.itemAt(ind)
+
+                        cell.content++;
+                        var component = Qt.createComponent("Flie.qml");
+                        var point = mapToItem(myGrid, cell.x + cell.width/2 , cell.y + cell.height/2 )
+
+                        var Flie = component.createObject(
+                                        myGrid, { flieStartPos: point
+                                               ,fieldSize: repeater.count
+                                               ,cell: cell
+                                               ,determination: root.determination
+                                               });
+                        Flie.startMigrate.connect(migrate);
+
+                        console.log(ind, repeater.itemAt(ind).objectName )
                     }
                 }
             }
