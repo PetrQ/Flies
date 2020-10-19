@@ -10,8 +10,8 @@ static const int    g_scurryInterval  = 60;
 static const double g_rotateStep      = 1;
 static const int    g_returnSpeed     = 3;
 static const int    g_flySpeed        = 5;
-static const int    g_brakingDistance = 60;
-static const int    g_landingDistance = 20;
+static const int    g_brakingDistance = 70;
+static const int    g_landingDistance = 30;
 
 int FlieLogic::m_registrateVal = qmlRegisterType<FlieLogic>("flie.components",1,0,"FlieLogic");
 
@@ -105,6 +105,8 @@ void FlieLogic::setCell(QQuickItem *obj)
 
 void FlieLogic::setPause(bool pause)
 {
+    if(m_corpse) return;
+
     pause ? stop() : start();
 
     if(pause){
@@ -296,4 +298,8 @@ void FlieLogic::die()
 {
     stop();
     m_fliePic->setOpacity(0.3);
+    m_corpse = true;
+
+    emit isDie(m_cellIndex);
+    emit corpseChanged();
 }

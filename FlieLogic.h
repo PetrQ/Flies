@@ -13,6 +13,7 @@ class FlieLogic : public QQuickItem
     Q_PROPERTY(int speed READ speed NOTIFY pathChanged)
     Q_PROPERTY(int path  READ path  NOTIFY pathChanged)
     Q_PROPERTY(int age   READ age   NOTIFY ageChanged)
+    Q_PROPERTY(bool corpse READ corpse NOTIFY corpseChanged)
     Q_PROPERTY(int determination READ determination WRITE setDetermination NOTIFY determinationChanged)
     Q_PROPERTY(int scurryIntvl READ scurryIntvl NOTIFY scurryIntvlChanged)
     Q_PROPERTY(QPointF flieStartPos READ flieStartPos WRITE setFlieStartPos NOTIFY flieStartPosChanged)
@@ -26,6 +27,7 @@ public:
 
     int   scurryIntvl() const;
     int         speed() const;
+    bool       corpse() const { return m_corpse;}
     int         path () const { return m_path;}
     int determination() const { return m_migratTimerInterval/1000; }
     int           age() const { return (m_liveTimer->elapsed() - m_pausePeriod)/1000;}
@@ -53,8 +55,10 @@ signals:
     void determinationChanged();
     void ageChanged();
     void pathChanged();
+    void corpseChanged();
 
     void startMigrate(int oldCell, int newCell);
+    void isDie(int Cell);
 
 protected:
     virtual void timerEvent(QTimerEvent*);
@@ -78,7 +82,8 @@ private:
     int m_moveTimerId      = 0;
     bool m_flFly   = false;
     bool m_pause   = true;
-    int m_maxAge   = 1000; //необходимое время для инициализации свойства в QML
+    bool m_corpse  = false;
+    int  m_maxAge  = 1000; //необходимое время для инициализации свойства в QML
 
     int    m_rotateSign   = 1;
     double m_rotate       = 0;

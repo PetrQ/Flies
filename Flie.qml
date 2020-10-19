@@ -3,8 +3,9 @@ import flie.components 1.0
 
 FlieLogic{
     id: logic
+    objectName: "FlieLogic"
     pause: scroll.pause
-    z: 10
+    z: sprite.visible ? 1 : 100
 
     property alias flieX: sprite.x
     property alias flieY: sprite.y
@@ -96,6 +97,5 @@ FlieLogic{
         }
 
     }
-
 
 }
