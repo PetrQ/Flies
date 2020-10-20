@@ -148,13 +148,17 @@ ApplicationWindow   {
         opacity: 0.9
         focus: true
 
-        contentItem: Column{
+        contentItem: Item{
+            id: frame
+            Column{
                 id: reportColumn
                 Button{
                     anchors.right: parent.right
                     text:"Закрыть"
                     onClicked: popupReport.close()
                 }
+            }
+
         }
 
         onOpened: {

@@ -5,6 +5,8 @@
 #include <QtQml>
 #include <QDebug>
 
+#define UNDEAD
+
 static const int    g_rotateRandomMax = 30;
 static const int    g_scurryInterval  = 60;
 static const double g_rotateStep      = 1;
@@ -285,14 +287,22 @@ void FlieLogic::changeMaxAge(int decrease)
     else
         m_maxAge = m_migratTimerInterval;
 
+#ifdef UNDEAD
+    m_maxAge -= decrease*2;
+#else
     m_maxAge -= decrease;
+#endif
 
     checkAge();
 }
 
 void FlieLogic::checkAge()
 {
-    if((m_liveTimer->elapsed() - m_pausePeriod) > m_maxAge)
+#ifdef UNDEAD
+    if(m_maxAge <= 0) // возраст не ограничен. насекомое живет пока может перемещаться по полям в поисках пищи
+#else
+    if((m_liveTimer->elapsed() - m_pausePeriod) > m_maxAge) // возраст ограничен
+#endif
         this->die();
 }
 
