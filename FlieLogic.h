@@ -10,6 +10,7 @@ class FlieLogic : public QQuickItem
 {
     Q_OBJECT
 
+    Q_PROPERTY(int cellId READ cellId NOTIFY cellIdChanged)
     Q_PROPERTY(int speed READ speed NOTIFY pathChanged)
     Q_PROPERTY(int path  READ path  NOTIFY pathChanged)
     Q_PROPERTY(int age   READ age   NOTIFY ageChanged)
@@ -27,6 +28,7 @@ public:
 
     int   scurryIntvl() const;
     int         speed() const;
+    int        cellId() const { return m_cellIndex; }
     bool       corpse() const { return m_corpse;}
     int         path () const { return m_path;}
     int determination() const { return m_migratTimerInterval/1000; }
@@ -56,6 +58,7 @@ signals:
     void ageChanged();
     void pathChanged();
     void corpseChanged();
+    void cellIdChanged();
 
     void startMigrate(int oldCell, int newCell);
     void isDie(int Cell);
@@ -80,6 +83,7 @@ private:
     QScopedPointer<QElapsedTimer> m_liveTimer;
     int m_migrationTimerId = 0;
     int m_moveTimerId      = 0;
+
     bool m_flFly   = false;
     bool m_pause   = true;
     bool m_corpse  = false;

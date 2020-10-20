@@ -101,6 +101,8 @@ void FlieLogic::setCell(QQuickItem *obj)
         Q_ASSERT(ok);
     }else
         m_cellIndex = -1;
+
+    emit cellIdChanged();
 }
 
 void FlieLogic::setPause(bool pause)

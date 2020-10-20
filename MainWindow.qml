@@ -39,7 +39,13 @@ ApplicationWindow   {
 
         Menu {
             title: qsTr("&Помощь")
-            Action { text: qsTr("&Навигация") }
+            Action { text: qsTr("&Навигация")
+                onTriggered: popupHelp.open()
+            }
+            MenuSeparator { }
+            Action { text: qsTr("&О программе...")
+                onTriggered: popupAbout.open()
+            }
         }
     }
 
@@ -57,7 +63,7 @@ ApplicationWindow   {
             if (event.key === Qt.Key_Space) scroll.pause = !scroll.pause
         }
 
-        onFocusChanged: console.log("FOCUS LOSE")
+        onFocusChanged: focus ? console.log("FOCUS RETURN") : console.log("FOCUS LOSE")
 
         Grid{
             id: myGrid
@@ -84,7 +90,7 @@ ApplicationWindow   {
 
                     MouseArea{
                         anchors.fill: parent
-                        onClicked: {
+                        onDoubleClicked: {
 
                             if(isFull) {
                                 popupWarning.open()
@@ -111,70 +117,87 @@ ApplicationWindow   {
         }
     }
 
-    Label{
-        width: contentWidth
-        height: contentHeight
-        anchors.centerIn: parent
+    PopupCustom {
+        id: popupHelp
 
-        font.pixelSize: 36
-        color: "blue"
-        opacity: 0.1
-        text: qsTr("Нажмите \"Пробел\" для паузы.")
+        width:   600
+        height:  250
+        radius: 2
+        textBold: false
+        textHAlignment: Text.AlignLeft
+
+        contentText: qsTr(" Двойной клик в ячейке - добавление насекомого. \r\n Пробел - пауза. \r\n Скролинг окна - мышью. \r\n Клик на насекомом - окно мониторинга его параметров.")
+    }
+
+    PopupCustom {
+        id: popupAbout
+        contentText: qsTr("Develop by Kusotskiy Petr \r\n kusotskiy@gmail.com.")
     }
 
     PopupCustom {
         id: popupWarning
-
-        contentItem:
-            Rectangle{
-            anchors.fill: parent
-            color: "transparent"
-
-            Text {
-
-                anchors.top: parent.top
-                anchors.topMargin: 30
-                anchors.horizontalCenter: parent.horizontalCenter
-                horizontalAlignment : Text.AlignHCenter
-
-                font{
-                    bold: true
-                    pointSize : 12
-                }
-
-                text: qsTr("Добавление невозможно. \r\n В секторе максимальное \r\n количество насекомых.")
-            }
-
-            Button{
-                id:closeBtn
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 20
-                text:"OK"
-                onPressed: popupWarning.close();
-
-                background: Rectangle {
-                    implicitWidth: 100
-                    implicitHeight: 40
-                    color: closeBtn.down ? "#d6d6d6" : "#f6f6f6"
-                    border.color: "#26282a"
-                    border.width: 1
-                    radius: 8
-                }
-            }
-        }
+        contentText: qsTr("Добавление невозможно. \r\n В секторе максимальное \r\n количество насекомых.")
     }
 
     PopupCustom {
         id: popupReport
         radius: 2
 
-        width: 400
-        height: 400
+        width: contentWidth + 40
+        height: contentHeight + 40
         opacity: 0.9
         focus: true
 
-        onClosed: scroll.pause = false;
+        contentItem: Column{
+                id: reportColumn
+                Button{
+                    anchors.right: parent.right
+                    text:"Закрыть"
+                    onClicked: popupReport.close()
+                }
+        }
+
+        onOpened: {
+            const myMap = new Map();
+
+            for(var child in myGrid.children)
+            {
+                if(myGrid.children[child].objectName === "FlieLogic")
+                {
+                    if(!myMap.has(myGrid.children[child].cellId))
+                        myMap.set(myGrid.children[child].cellId, [])
+
+                    var string = "Пробег " + myGrid.children[child].path.toString()
+                               + " п.  Возраст " + myGrid.children[child].age.toString()
+                               + " с.  Скорость "
+                               + (Math.round(myGrid.children[child].path*100/myGrid.children[child].age)/100).toString()
+                               + "п/с."
+
+                    myMap.get(myGrid.children[child].cellId).push(string);
+                }
+            }
+
+            for (var i = 0; i < myMap.size; ++i) {
+                if(myMap.has(i)){
+                    var component = Qt.createComponent("ReportString.qml");
+                    component.createObject(reportColumn, { text: "Сектор " + (i + 1) + ":" });
+                }
+
+                for(var strId in myMap.get(i)){
+                    component = Qt.createComponent("ReportString.qml");
+                    component.createObject(reportColumn, { text: myMap.get(i)[strId] });
+                }
+            }
+        }
+
+        onClosed: {
+            onClosed: scroll.pause = false;
+
+            for(var child1 in reportColumn.children){
+                if(reportColumn.children[child1].objectName === "ReportString")
+                    reportColumn.children[child1].destroy()
+            }
+        }
     }
 
     function clear(){

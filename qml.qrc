@@ -6,5 +6,6 @@
         <file>CustomComboBox.qml</file>
         <file>Flie.qml</file>
         <file>PopupCustom.qml</file>
+        <file>ReportString.qml</file>
     </qresource>
 </RCC>
