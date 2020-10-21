@@ -145,6 +145,7 @@ ApplicationWindow   {
 
         property real calcHeight: reportColumn.height + topPadding + bottomPadding + btn.height
 
+
         width:  reportColumn.width  + 20 + leftPadding + rightPadding
         height: (root.height - 100) < calcHeight ? root.height - 100 : calcHeight
         opacity: 0.9
@@ -209,7 +210,7 @@ ApplicationWindow   {
                 }
             }
 
-            for (var i = 0; i < myMap.size; ++i) {
+            for (var i = 0; i < repeater.count; ++i) {
                 if(myMap.has(i)){
                     var component = Qt.createComponent("ReportString.qml");
                     component.createObject(reportColumn, { text: "Сектор " + (i + 1) + ":" });
