@@ -213,7 +213,7 @@ ApplicationWindow   {
             for (var i = 0; i < repeater.count; ++i) {
                 if(myMap.has(i)){
                     var component = Qt.createComponent("ReportString.qml");
-                    component.createObject(reportColumn, { text: "Сектор " + (i + 1) + ":" });
+                    component.createObject(reportColumn, { text: "Сектор "+(i + 1)+" :" });
                 }
 
                 for(var strId in myMap.get(i)){
@@ -285,7 +285,7 @@ ApplicationWindow   {
     }
 
     function flieDie(cellId){
-        repeater.itemAt(cellId).content++
+        repeater.itemAt(cellId).content--
     }
 
     onWidthChanged: {

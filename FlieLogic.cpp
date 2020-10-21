@@ -4,6 +4,7 @@
 #include <QRandomGenerator>
 #include <QtQml>
 #include <QDebug>
+#include <QtGlobal>
 
 #define UNDEAD
 
@@ -44,9 +45,9 @@ void FlieLogic::setFieldSize(int size)
 
     m_fieldSize = size;
 
-    changeMaxAge();
-
     emit fieldSizeChanged();
+
+    setMaxAge();
 }
 
 void FlieLogic::setFlieStartPos(QPointF val)
@@ -69,9 +70,9 @@ void FlieLogic::setDetermination(int val)
 
     m_migratTimerInterval = val*1000;
 
-    changeMaxAge();
-
     emit determinationChanged();
+
+    setMaxAge();
 }
 
 void FlieLogic::setFliePic(QQuickItem *obj)
@@ -140,7 +141,17 @@ void FlieLogic::timerEvent(QTimerEvent *event)
                     startMigration(item, newCell );
                     break;
                 }
-                else changeMaxAge(m_migratTimerInterval/2);
+                else {
+                    #ifdef UNDEAD
+                        m_maxAge -= m_migratTimerInterval*2;
+//                        qDebug()<<Q_FUNC_INFO<<" decrease "<<m_maxAge<<m_cellIndex
+//                               <<item->property("content");
+                    #else
+                        m_maxAge -= m_migratTimerInterval/2;
+                    #endif
+
+                    checkAge();
+                }
             }
     }
 
@@ -148,6 +159,26 @@ void FlieLogic::timerEvent(QTimerEvent *event)
         if(m_flFly) this->fly();
         else        this->scurry();
     }
+}
+
+void FlieLogic::checkAge()
+{
+#ifdef UNDEAD
+    if(m_maxAge <= 0) // возраст не ограничен. насекомое живет пока может перемещаться по полям в поисках пищи
+#else
+    if((m_liveTimer->elapsed() - m_pausePeriod) > m_maxAge) // возраст ограничен
+#endif
+        this->die();
+}
+
+void FlieLogic::die()
+{
+    stop();
+    m_fliePic->setOpacity(0.3);
+    m_corpse = true;
+
+    emit isDie(m_cellIndex);
+    emit corpseChanged();
 }
 
 void FlieLogic::start()
@@ -280,38 +311,15 @@ void FlieLogic::makeMove()
     m_fliePic->setRotation(m_fliePic->rotation() + m_rotateSign*g_rotateStep);
 }
 
-void FlieLogic::changeMaxAge(int decrease)
+void FlieLogic::setMaxAge()
 {
-    if(m_fieldSize)
-        m_maxAge = m_migratTimerInterval * m_fieldSize;
-    else
+    if(m_migratTimerInterval == 0)
+        m_maxAge = m_fieldSize;
+
+    if(qFuzzyCompare(m_fieldSize, 0))
         m_maxAge = m_migratTimerInterval;
 
-#ifdef UNDEAD
-    m_maxAge -= decrease*2;
-#else
-    m_maxAge -= decrease;
-#endif
-
-    checkAge();
+    if(m_migratTimerInterval && m_fieldSize)
+        m_maxAge = m_migratTimerInterval * m_fieldSize;
 }
 
-void FlieLogic::checkAge()
-{
-#ifdef UNDEAD
-    if(m_maxAge <= 0) // возраст не ограничен. насекомое живет пока может перемещаться по полям в поисках пищи
-#else
-    if((m_liveTimer->elapsed() - m_pausePeriod) > m_maxAge) // возраст ограничен
-#endif
-        this->die();
-}
-
-void FlieLogic::die()
-{
-    stop();
-    m_fliePic->setOpacity(0.3);
-    m_corpse = true;
-
-    emit isDie(m_cellIndex);
-    emit corpseChanged();
-}

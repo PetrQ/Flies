@@ -76,6 +76,7 @@ Window {
                 spring: true
 
                 name: qsTr("Решительность")
+                from:1
                 to: 20
             }
 

@@ -70,7 +70,7 @@ private:
     void stop();
     int  rotateToCenter(const QPointF& flInCellPos);
     void makeMove();
-    void changeMaxAge(int decrease = 0);
+    void setMaxAge();
     void checkAge();
 
     void startMigration(QQuickItem* item , int newCell ); //переход "Взлет" в диаграмме
