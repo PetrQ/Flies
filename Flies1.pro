@@ -20,4 +20,4 @@ HEADERS += \
     FlieLogic.h
 
 STATECHARTS += \
-    Cicle.scxml
+    Cycle.scxml
