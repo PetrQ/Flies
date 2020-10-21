@@ -143,25 +143,53 @@ ApplicationWindow   {
         id: popupReport
         radius: 2
 
-        width: contentWidth + 40
-        height: contentHeight + 40
+        property real calcHeight: reportColumn.height + topPadding + bottomPadding + btn.height
+
+        width:  reportColumn.width  + 20 + leftPadding + rightPadding
+        height: (root.height - 100) < calcHeight ? root.height - 100 : calcHeight
         opacity: 0.9
         focus: true
+        rightPadding: 4
 
         contentItem: Item{
             id: frame
-            Column{
-                id: reportColumn
-                Button{
-                    anchors.right: parent.right
-                    text:"Закрыть"
-                    onClicked: popupReport.close()
-                }
+            Button{
+                id: btn
+                text: "Закрыть"
+                anchors.right: parent.right
+
+                anchors.rightMargin: 10
+                onClicked: popupReport.close()
             }
 
+            Flickable {
+                id: flicflic
+                anchors.top: btn.bottom
+                anchors.bottom: frame.bottom
+                anchors.left: frame.left
+                anchors.right: frame.right
+
+                contentHeight: reportColumn.height
+                clip: true
+
+                Column{
+                    id: reportColumn
+                    padding: 4
+                    rightPadding: 10
+                }
+
+                ScrollBar.vertical: ScrollBar{
+                    property real workHeight : frame.height - btn.height
+
+                    size: workHeight/reportColumn.height
+                    anchors.top: parent.top
+                    height: workHeight
+                }
+            }
         }
 
         onOpened: {
+
             const myMap = new Map();
 
             for(var child in myGrid.children)
