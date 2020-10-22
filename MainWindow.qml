@@ -19,17 +19,17 @@ ApplicationWindow   {
         focus: false
         Menu {
             title: qsTr("&Управление")
-            Action { text: qsTr("&Перезапустить")
-                onTriggered: restart()
-            }
-            Action { text: qsTr("&Очистить")
-                onTriggered: clear()
-            }
             Action { text: qsTr("&Отчет")
                 onTriggered: {
                     scroll.pause = true;
                     popupReport.open()
                 }
+            }
+            Action { text: qsTr("&Перезапустить")
+                onTriggered: restart()
+            }
+            Action { text: qsTr("&Очистить")
+                onTriggered: clear()
             }
             MenuSeparator { }
             Action { text: qsTr("&Закрыть")
@@ -192,6 +192,9 @@ ApplicationWindow   {
         onOpened: {
 
             const myMap = new Map();
+            var tolal = 0;
+            var alive = 0;
+            var dead  = 0;
 
             for(var child in myGrid.children)
             {
@@ -207,17 +210,22 @@ ApplicationWindow   {
                                + "п/с."
 
                     myMap.get(myGrid.children[child].cellId).push(string);
+
+                    tolal++;
+                    if(myGrid.children[child].corpse) dead++;
+                    else alive++;
                 }
             }
 
+            var component = Qt.createComponent("ReportString.qml");
+            component.createObject(reportColumn, { text: "Всего: "+tolal+", живые: "+alive+", мертвые: "+dead+"." });
+
             for (var i = 0; i < repeater.count; ++i) {
                 if(myMap.has(i)){
-                    var component = Qt.createComponent("ReportString.qml");
                     component.createObject(reportColumn, { text: "Сектор "+(i + 1)+" :" });
                 }
 
                 for(var strId in myMap.get(i)){
-                    component = Qt.createComponent("ReportString.qml");
                     component.createObject(reportColumn, { text: myMap.get(i)[strId] });
                 }
             }
